@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Djikstra Implementation</title>
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+
+    <button id="createButton">Create / Visualize Graph</button>
+    <button id="findButton">Find shortest path in existing graph</button>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById("createButton").addEventListener("click", function() {
+            window.location.href = "create.html";
+        });
+        document.getElementById("findButton").addEventListener("click", function() {
+            window.location.href = "path.html";
+        });
+    });
+</script>
+</body>
+</html>
