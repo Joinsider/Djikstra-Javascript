@@ -18,6 +18,8 @@ table {
     width: 50%;
     margin: auto;
     text-align: center;
+    background-color: darkgray;
+    padding: 20px;
 }
 
 #uploadGraph {
@@ -36,12 +38,17 @@ table {
     padding: 20px;
 }
 
-#addButton {
+#addButton #removeButton{
     background-color: #4CAF50;
     color: white;
     padding: 14px 20px;
     margin: 8px 0;
     border: none;
     cursor: pointer;
-    width: 5%;
+    width: 50px;
+}
+
+#rowDiv {
+    display: flex;
+    margin: 20px;
 }

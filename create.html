@@ -17,7 +17,10 @@
     <div id="createGraph">
     <h2>Create a Graph:</h2>
     <form id="costForm">
-        <button id="addButton" type="button">+</button>
+        <div id="rowDiv">
+            <button id="addButton" type="button">+</button>
+            <button id="removeButton" type="button">-</button>
+        </div>
         <table id="addTable">
             <tr>
                 <th>Starting Point</th>
@@ -25,13 +28,18 @@
                 <th>Destination Point</th>
             </tr>
             <tr>
-                <td><input type="text" name="startPoint" id="startPoint1" required></td>
-                <td><input type="number" name="cost" id="cost1"></td>
-                <td><input type="text" name="endPoint" id="endPoint1" required></td>
+                <td><input type="text" name="startPoint" id="startPoint1" required placeholder="e.g. A"></td>
+                <td><input type="number" name="cost" id="cost1" value="1"></td>
+                <td><input type="text" name="endPoint" id="endPoint1" required placeholder="e.g. B"></td>
             </tr>
         </table>
         <button type="submit">Submit</button>
     </form>
+    </div>
+    <div id="showGraph">
+        <h2>Graph:</h2>
+        <div id="graphDiv"></div>
+        <button id="showGraphButton" type="button">Show AdjacencyList</button>
     </div>
     <script src="js/create.js"></script>
 </body>
