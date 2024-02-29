@@ -53,10 +53,12 @@ document.getElementById('submit').addEventListener('click', function() {
 
 document.getElementById('showGraphButton').addEventListener('click', function() {
    if(adjacencyList !== undefined){
-       alert("Adjacency List undefinded");
+       alert("Adjacency List undefined");
    }else{
        let adjacencyList = localStorage['adjacencyList'] = JSON.parse(adjacencyList);
-       adjacencyList.createDisplay(document.getElementById('graphDiv'));
+       let graphDiv = document.getElementById('graphDiv');
+       let div = adjacencyList.createDisplay(graphDiv);
+       graphDiv.appendChild(div);
    }
 
 });
@@ -79,23 +81,19 @@ class AdjacencyList {
     }
 
     addEdge(source, destination, weight) {
-        this.nodes.get(source).push({ node: destination, weight });
+        this.nodes.get(source).push({ node: destination, weight }); // Adds the edge via a map
         this.nodes.get(destination).push({ node: source, weight });
     }
 
     createDisplay(divId) {
         let div = document.getElementById(divId);
-        for (let i = 1; i < this.nodes.length; i++) {
-            let node = this.nodes[i];
-            let nodeDiv = document.createElement('div');
-            for(let j = 0; j < node.length; j++){
-                let neighbor = node[j];
-                let p = document.createElement('p')
-                p.innerHTML = node + ' - ' + neighbor.cost + ' -> ' + neighbor.node;
-                nodeDiv.appendChild(p);
-                nodeDiv.appendChild(document.createElement('br'));
-            }
+        // Add the nodes via a p element to the div and add the edges via a p element to the div
+        for (const [node, neighbors] of this.nodes) {
+            let p = document.createElement('p');
+            p.textContent = node + ' -> ' + neighbors.map(n => n.node).join(', ');
+            div.appendChild(p);
         }
+        return div;
     }
     display() {
         for (const [node, neighbors] of this.nodes) {
