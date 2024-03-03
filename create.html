@@ -16,25 +16,25 @@
     <br><br>
     <div id="createGraph">
     <h2>Create a Graph:</h2>
-    <form id="costForm">
         <div id="rowDiv">
             <button id="addButton" type="button">+</button>
             <button id="removeButton" type="button">-</button>
         </div>
-        <table id="addTable">
-            <tr>
-                <th>Starting Point</th>
-                <th>Travel Cost</th>
-                <th>Destination Point</th>
-            </tr>
-            <tr>
-                <td><input type="text" name="startPoint" id="startPoint1" required placeholder="e.g. A"></td>
-                <td><input type="number" name="cost" id="cost1" value="1"></td>
-                <td><input type="text" name="endPoint" id="endPoint1" required placeholder="e.g. B"></td>
-            </tr>
-        </table>
-        <button type="submit">Submit</button>
-    </form>
+        <form id="costForm">
+            <table id="addTable">
+                <tr>
+                    <th>Starting Point</th>
+                    <th>Travel Cost</th>
+                    <th>Destination Point</th>
+                </tr>
+                <tr>
+                    <td><input type="text" name="startPoint" id="startPoint" required placeholder="e.g. A"></td>
+                    <td><input type="number" name="cost" id="cost" value="1"></td>
+                    <td><input type="text" name="endPoint" id="endPoint" required placeholder="e.g. B"></td>
+                </tr>
+            </table>
+            <button type="submit">Submit</button>
+        </form>
     </div>
     <div id="showGraph">
         <h2>Graph:</h2>
