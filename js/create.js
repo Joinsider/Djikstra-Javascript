@@ -4,7 +4,16 @@ const removeButton = document.getElementById('removeButton');
 const submit = document.getElementById('submit');
 const showGraphButton = document.getElementById('showGraphButton');
 const graphDiv = document.getElementById('graphDiv');
+const graph = new Graph();
 
+let graphStorage = localStorage.getItem('Graph');
+if (graphStorage) {
+    let data = JSON.parse(graphStorage);
+    graph.importNodes(data);
+}else{
+    localStorage.setItem('Graph', "");
+    graphStorage = 1;
+}
 
 addButton.addEventListener('click', function() {
     let row = document.createElement('tr');
@@ -30,6 +39,7 @@ addButton.addEventListener('click', function() {
                 break;
         }
         cell.appendChild(input);
+        console.log(input.value);
         row.appendChild(cell);
     }
     table.appendChild(row);
@@ -37,6 +47,9 @@ addButton.addEventListener('click', function() {
 removeButton.addEventListener('click', function() {
     if (table.rows.length > 1) {
         table.deleteRow(-1);
+        console.log("Last Row removed");
+    }else{
+        console.log("No rows to remove");
     }
 });
 
@@ -45,23 +58,29 @@ submit.addEventListener('click', function() {
     if(validateForm()){
         let rows = table.rows;
         localStorage.clear();
-        let graph = new Graph();
+        console.log("LocalSotrage cleaned");
 
         for(let i = 1; i<rows.length; i++){
             let cells = rows[i].cells;
             let startPoint = cells[0].children[0].value;
-            let cost = cells[1].children[0].querySelector('#cost').value;
+            let cost = parseInt(cells[1].children[0].querySelector('#cost').value);
             let endPoint = cells[2].children[0].value;
-            
-            let ConnectionPossible = Graph.addNodes(startPoint, endPoint, cost);
+            if(cost <= 0){
+                cost = 1;
+            }
+            let ConnectionPossible = graph.addNodes(startPoint, endPoint, cost);
             if(!ConnectionPossible){
                 alert('You entered two identical connections. Please check inputs again');
+                console.log("Two identical connections entered");
                 return;
             }
-            let graph = JSON.stringify(Graph.exportNodes());
-            localStorage.setItem('Graph', graph);
-            alert("Graph creation successful!");
+            console.log("Connection established")
         }
+        let graphID = "Graph";
+        exportNodes(graphID);
+        localStorage.setItem('Graph', graphString);
+        console.log("Graph saved to localStorage");
+        alert("Graph creation successful!");
     }
 });
 
@@ -70,8 +89,8 @@ showGraphButton.addEventListener('click', function(){
    if(savedGraph === ""){
        alert('No Graph was set, please input one above!');
    }else{
-       Graph.importGraph(JSON.parse(savedGraph));
-       let graphRepresentation = Graph.createRepresentation();
+       graph.importGraph(JSON.parse(savedGraph));
+       let graphRepresentation = graph.createRepresentation();
        graphDiv.appendChild(graphRepresentation);
    }
 });
@@ -81,7 +100,7 @@ function validateForm(){
     for(let row of rows){
         let cells = row.cells;
         for(let cell of cells){
-            if(cell.value === ""){
+            if(cell.textContent.trim === ""){
                 alert("Please Fill all fields")
                 return false;
             }
@@ -89,14 +108,6 @@ function validateForm(){
     }
     return true;
 }
-
-
-let graphStorage = localStorage.getItem('Graph');
-if (!graphStorage) {
-    localStorage.setItem('Graph', "");
-    graphStorage = 1;
-}
-
 
 
 class Graph {
@@ -112,15 +123,33 @@ class Graph {
         return this.nodes.get(key);
     }
 
-    importGraph(graphImport){
-        this.nodes = graphImport;
+    importGraph(graphID){
+        let graphString = localStorage.getItem(graphID);
+        if(graphString === ""){
+            console.log("No graph found");
+            return false;
+        }else{
+            this.nodes = JSON.parse(graphString);
+            console.log("Graph import successful");
+            return true;
+        }
     }
 
-    exportGraph = () => this.nodes;
+    exportGraph(graphID){
+        let graphString = JSON.stringify(this.nodes);
+        let success = localStorage.setItem(graphID, graphString);
+        if(success){
+            console.log("Graph Export successful")
+            return true;
+        }else{
+            console.log("Graph Export failed.");
+            return false;
+        }
+    }
 
     checkConnection(key, value) {
         let node = this.getNode(key);
-        for (let i = 0; i < node.length; i++) {
+        for (let i = 0; i < node.length(); i++) {
             if (node[i][0] === value) {
                 return true;
             }
@@ -129,12 +158,14 @@ class Graph {
     }
 
     addNodes(key, value, cost) {
-        if (this.checkKey(key)) {
+        if(key < 1){
+            alert("Please enter a number larger or equal to 1.")
+            return false;
+        }else if (this.checkKey(key)) {
             if (!this.checkConnection(key, value)) {
                 return false;
             }
-            this.nodes.get(key).push([value, cost]);
-            return true;
+            this.nodes.get(key).push([value, parseInt(cost)]);
         } else {
             this.nodes.set(key, [[value, cost]])
         }
@@ -148,16 +179,19 @@ class Graph {
             let li = document.createElement('li');
             let connections = this.nodes.get(key);
             let liText = key + ": ";
-            for (let neighbor of connections) {
+            for (let i = 0; i < connections.length; i++) {
+                let neighbor = connections[i];
                 let point = neighbor[0];
                 let cost = neighbor[1];
-                liText = liText + "{ " + point + ": " + cost + "}, ";
+                liText = liText + (i === 0 ? "" : "{ ") + point + ": " + cost + "}";
+                if (i < connections.length - 1) {
+                    liText = liText + ", ";
+                }
             }
-            liText.slice(0, -1);
-            li.textContent(liText);
+            liText = liText.toString();
+            li.innerHTML(liText);
             list.appendChild(li);
         }
-        
-    return list;
+        return list;
     }
 }
