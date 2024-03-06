@@ -4,59 +4,77 @@ document.addEventListener('DOMContentLoaded', function() {
             this.nodes = new Map();
         }
     
-        checkNode(key) {
-            return this.nodes.has(key);
-        }
-    
         importList(loadID){
-            const mapArrayString = localStorage.getItem('myNestedMap');
-            const mapArray = JSON.parse(mapArrayString);
+            const mapArrayString = localStorage.getItem(loadID);
+            const importArray = JSON.parse(mapArrayString);
 
-            const nestedMap = new Map(mapArray.map(([key, value]) => [key, new Map(value)]));
+            let nestedMap = new Map();
+            for (let i = 0; i < importArray.length; i++) {
+                let valueMap;
 
-            if(nestedMap === ""){
+                let key = importArray[i][0];
+                let value = importArray[i][1];
+                valueMap = new Map();
+
+                for (let j = 0; j < value.length; j++) {
+                    let neighbor = value[j][0];
+                    let cost = value[j][1];
+                    valueMap.set(neighbor, cost);
+                }
+                nestedMap.set(key, valueMap);
+            }
+
+            if (importArray.toString() === "") {
                 console.log("No graph found");
                 return false;
-            }else {
+            } else {
                 this.nodes = nestedMap;
                 console.log("Graph import successful");
                 return true;
             }
         }
     
-        exportList(graphID){
+        exportList(graphID) {
+            let exportMap = this.nodes;
+            const keys = exportMap.keys();
+            for (let key of keys) {
+                let keyMap = exportMap.get(key);
+                let keyArray = Array.from(keyMap);
+                exportMap.set(key, keyArray);
+            }
+            let exportArray = Array.from(exportMap);
 
-            // Convert Map to an array of key-value pairs
-            const mapArray = Array.from(this.nodes, ([key, value]) => [key, Array.from(value.entries())]);
-
-            // Stringify the array
-            const mapString = JSON.stringify(mapArray);
+            const mapString = JSON.stringify(exportArray);
 
             // Save the stringified array to LocalStorage
             localStorage.setItem(graphID, mapString);
 
-            if(localStorage.getItem(graphID) === mapString){
+            if (localStorage.getItem(graphID) === mapString) {
                 console.log("Graph Export successful")
                 return true;
-            }else{
+            } else {
                 console.log("Graph Export failed.");
                 return false;
             }
         }
-    
-        checkConnection(key, value) {
-            let nodeValue = this.nodes.get(key);
-            return nodeValue.has(value);
+
+        checkDoubleConnections(key, value) {
+            let neighbors = this.nodes.get(key); // Returns a Map of the neighbors
+            if (neighbors.has(value)) {
+                return false;
+            }
+            return true;
         }
-    
+
+
         addNodes(key, value, cost) {
             let nodeSet = new Map();
             nodeSet.set(value, cost);
-            if(key < 1){
+            if (key < 1) {
                 alert("Please enter a number larger or equal to 1.")
                 return false;
-            }else if (graphElement.checkNode(key)) {
-                if (!this.checkConnection(key, value)) {
+            } else if (this.nodes.has(key)) {
+                if (!this.nodes.get(key).has(value)) {
                     return false;
                 }
                 let currentValue = this.nodes.get(key);
@@ -72,34 +90,22 @@ document.addEventListener('DOMContentLoaded', function() {
             let list = document.createElement('ul');
             list.setAttribute('id', 'representationUL')
             let keys = this.nodes.keys();
-            for(let key of keys){
+            for(let key of keys) {
                 let liID = "value" + key;
                 let li = document.createElement('li');
                 li.setAttribute('id', liID);
-                let neighbors = this.nodes.get(key);
-                for(let neighbor of neighbors){
-                    let point = neighbor[0]
+
+                let liText = key + ":";
+
+                let neighbors = this.nodes.get(key); // Returns the neighbors map
+                let neighborsKeys = neighbors.keys(); // Return all neighbors
+                for (let neighborKey of neighborsKeys) {
+                    let cost = neighbors.get(neighborKey);
+                    liText = liText + " [" + neighborKey + ": " + cost + "] ";
                 }
-            }
-            this.nodes.forEach (function(value, key){
-                let liID = "value" + key;
-                let li = document.createElement('li');
-                li.setAttribute('id', liID);
-                let connections = value;
-                let liText = "";
-                for(let i = 0; i < value.length; i++){
-                    let neighbor = connections[i];
-                    let point = neighbor[0];
-                    let cost = neighbor[1];
-                    liText = liText + (i === 0 ? "" : "{ ") + point + ": " + cost + "}";
-                    if (i < connections.length - 1) {
-                        liText = liText + ", ";
-                    }
-                }
-                liText = liText.toString();
                 li.innerHTML = liText;
                 list.appendChild(li);
-            });
+            }
             return list;
         }
     }
@@ -108,6 +114,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const addButton = document.getElementById('addButton');
     const removeButton = document.getElementById('removeButton');
     const submit = document.getElementById('submitButton');
+    const resetButton = document.getElementById('resetButton');
     const showGraphButton = document.getElementById('showGraphButton');
     const graphDiv = document.getElementById('graphDiv');
     const graphElement = new Graph(); // Create a new graph object to store the nodes
@@ -179,24 +186,29 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.log("Connection established")
             }
             let exportSuccessful = graphElement.exportList(loadKey);
-            if(exportSuccessful){
+            if (exportSuccessful) {
                 console.log("Graph saved to localStorage");
                 alert("Graph creation successful!");
-            }else{
+            } else {
                 console.log("Error Graph couldn't be saved");
                 alert("Graph creation not successful!");
             }
         }
     });
-    
-    showGraphButton.addEventListener('click', function(){
-       let loadSuccessful = graphElement.importList(loadKey);
-       if(!loadSuccessful){
-           alert('No Graph was set, please input one above!');
-       }else{
-           let graphRepresentationOutput = graphElement.createRepresentation();
-           graphDiv.appendChild(graphRepresentationOutput);
-       }
+
+    resetButton.addEventListener('click', function () {
+        localStorage.setItem(loadKey, "");
+        alert("Reset successful");
+    });
+
+    showGraphButton.addEventListener('click', function () {
+        let loadSuccessful = graphElement.importList(loadKey);
+        if (!loadSuccessful) {
+            alert('No Graph was set, please input one above!');
+        } else {
+            let graphRepresentationOutput = graphElement.createRepresentation();
+            graphDiv.appendChild(graphRepresentationOutput);
+        }
     });
     
     function validateForm(){

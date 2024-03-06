@@ -6,23 +6,21 @@
     <link rel="stylesheet" href="css/create.css">
 </head>
 <body>
-    <div id="uploadGraph">
-    <h2>Upload an Graph:</h2>
-    <form>
-        <input type="file" id="graphFile" name="graphFile" accept="text/plain">
-        <input type="submit" value="Upload">
-    </form>
-    </div>
-    <br><br>
-    <div id="createGraph">
+<nav>
+    <a href="index.html">Main</a>
+    <a href="create.html" style="color:#4CAF50">Create</a>
+    <a href="path.html">Shortest Path</a>
+</nav>
+<br><br>
+<div id="createGraph">
     <h2>Create a Graph:</h2>
-        <div id="rowDiv">
-            <button id="addButton" type="button">+</button>
-            <button id="removeButton" type="button">-</button>
-        </div>
-        <form id="costForm">
-            <table id="addTable">
-                <tr>
+    <div id="rowDiv">
+        <button id="addButton" type="button">+</button>
+        <button id="removeButton" type="button">-</button>
+    </div>
+    <form id="costForm">
+        <table id="addTable">
+            <tr>
                     <th>Starting Point</th>
                     <th>Travel Cost</th>
                     <th>Destination Point</th>
@@ -34,6 +32,7 @@
                 </tr>
             </table>
             <button type="button" id="submitButton">Submit</button>
+        <button type="button" id="resetButton">Reset</button>
         </form>
     </div>
     <div id="showGraph">
