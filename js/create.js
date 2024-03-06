@@ -1,10 +1,96 @@
+class Graph {
+    constructor() {
+        this.nodes = new Map();
+    }
+
+    checkKey(key) {
+        return this.nodes.has(key);
+    }
+
+    getNode(key) {
+        return this.nodes.get(key);
+    }
+
+    importGraph(graphID){
+        let graphString = localStorage.getItem(graphID);
+        if(graphString === ""){
+            console.log("No graph found");
+            return false;
+        }else{
+            this.nodes = JSON.parse(graphString);
+            console.log("Graph import successful");
+            return true;
+        }
+    }
+
+    exportGraph(graphID){
+        let graphString = JSON.stringify(this.nodes);
+        let success = localStorage.setItem(graphID, graphString);
+        if(success){
+            console.log("Graph Export successful")
+            return true;
+        }else{
+            console.log("Graph Export failed.");
+            return false;
+        }
+    }
+
+    checkConnection(key, value) {
+        let node = this.getNode(key);
+        for (let i = 0; i < node.length(); i++) {
+            if (node[i][0] === value) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    addNodes(key, value, cost) {
+        if(key < 1){
+            alert("Please enter a number larger or equal to 1.")
+            return false;
+        }else if (this.checkKey(key)) {
+            if (!this.checkConnection(key, value)) {
+                return false;
+            }
+            this.nodes.get(key).push([value, parseInt(cost)]);
+        } else {
+            this.nodes.set(key, [[value, cost]])
+        }
+        return true;
+    }
+
+    createRepresentation(){
+        let list = document.createElement('ul');
+        let keys = Array.from(this.nodes.keys());
+        for(let key of keys){
+            let li = document.createElement('li');
+            let connections = this.nodes.get(key);
+            let liText = key + ": ";
+            for (let i = 0; i < connections.length; i++) {
+                let neighbor = connections[i];
+                let point = neighbor[0];
+                let cost = neighbor[1];
+                liText = liText + (i === 0 ? "" : "{ ") + point + ": " + cost + "}";
+                if (i < connections.length - 1) {
+                    liText = liText + ", ";
+                }
+            }
+            liText = liText.toString();
+            li.innerHTML(liText);
+            list.appendChild(li);
+        }
+        return list;
+    }
+}
+
 const table = document.getElementById("addTable");
 const addButton = document.getElementById('addButton');
 const removeButton = document.getElementById('removeButton');
 const submit = document.getElementById('submit');
 const showGraphButton = document.getElementById('showGraphButton');
 const graphDiv = document.getElementById('graphDiv');
-const graph = new Graph();
+const graph = new Graph(); // Create a new graph object to store the nodes
 
 let graphStorage = localStorage.getItem('Graph');
 if (graphStorage) {
@@ -110,88 +196,3 @@ function validateForm(){
 }
 
 
-class Graph {
-    constructor() {
-        this.nodes = new Map();
-    }
-
-    checkKey(key) {
-        return this.nodes.has(key);
-    }
-
-    getNode(key) {
-        return this.nodes.get(key);
-    }
-
-    importGraph(graphID){
-        let graphString = localStorage.getItem(graphID);
-        if(graphString === ""){
-            console.log("No graph found");
-            return false;
-        }else{
-            this.nodes = JSON.parse(graphString);
-            console.log("Graph import successful");
-            return true;
-        }
-    }
-
-    exportGraph(graphID){
-        let graphString = JSON.stringify(this.nodes);
-        let success = localStorage.setItem(graphID, graphString);
-        if(success){
-            console.log("Graph Export successful")
-            return true;
-        }else{
-            console.log("Graph Export failed.");
-            return false;
-        }
-    }
-
-    checkConnection(key, value) {
-        let node = this.getNode(key);
-        for (let i = 0; i < node.length(); i++) {
-            if (node[i][0] === value) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    addNodes(key, value, cost) {
-        if(key < 1){
-            alert("Please enter a number larger or equal to 1.")
-            return false;
-        }else if (this.checkKey(key)) {
-            if (!this.checkConnection(key, value)) {
-                return false;
-            }
-            this.nodes.get(key).push([value, parseInt(cost)]);
-        } else {
-            this.nodes.set(key, [[value, cost]])
-        }
-        return true;
-    }
-
-    createRepresentation(){
-        let list = document.createElement('ul');
-        let keys = Array.from(this.nodes.keys());
-        for(let key of keys){
-            let li = document.createElement('li');
-            let connections = this.nodes.get(key);
-            let liText = key + ": ";
-            for (let i = 0; i < connections.length; i++) {
-                let neighbor = connections[i];
-                let point = neighbor[0];
-                let cost = neighbor[1];
-                liText = liText + (i === 0 ? "" : "{ ") + point + ": " + cost + "}";
-                if (i < connections.length - 1) {
-                    liText = liText + ", ";
-                }
-            }
-            liText = liText.toString();
-            li.innerHTML(liText);
-            list.appendChild(li);
-        }
-        return list;
-    }
-}
