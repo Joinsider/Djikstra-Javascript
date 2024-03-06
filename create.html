@@ -5,7 +5,7 @@
     <title>Title</title>
     <link rel="stylesheet" href="css/create.css">
 </head>
-<body onload="js/create.js">
+<body>
     <div id="uploadGraph">
     <h2>Upload an Graph:</h2>
     <form>
@@ -33,7 +33,7 @@
                     <td><input type="text" name="endPoint" id="endPoint" required placeholder="e.g. B"></td>
                 </tr>
             </table>
-            <button type="button">Submit</button>
+            <button type="button" id="submitButton">Submit</button>
         </form>
     </div>
     <div id="showGraph">
@@ -41,6 +41,6 @@
         <div id="graphDiv"></div>
         <button id="showGraphButton" type="button">Show AdjacencyList</button>
     </div>
-    <script src="js/create.js"></script>
+    <script src="js/create.js" defer></script>
 </body>
 </html>
