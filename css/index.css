@@ -1,4 +1,21 @@
-button{
+button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    cursor: pointer;
+    width: 50%;
+}
+
+nav {
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: gray;
+    text-align: center;
+    padding: 20px;
+}
+
+button {
     background-color: #4CAF50;
     color: white;
     padding: 14px 20px;
@@ -12,4 +29,43 @@ body {
     font-family: Arial, Helvetica, sans-serif;
     background-color: #f2f2f2;
     text-align: center;
+}
+
+table {
+    width: 50%;
+    margin: auto;
+    text-align: center;
+    background-color: darkgray;
+    padding: 20px;
+}
+
+#uploadGraph {
+    background-color: gray;
+    width: 80%;
+    position: relative;
+    margin: auto;
+    padding: 20px;
+}
+
+#createGraph {
+    background-color: gray;
+    width: 80%;
+    position: relative;
+    margin: auto;
+    padding: 20px;
+}
+
+#addButton #removeButton {
+    background-color: #4CAF50;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    cursor: pointer;
+    width: 50px;
+}
+
+#rowDiv {
+    display: flex;
+    margin: 20px;
 }

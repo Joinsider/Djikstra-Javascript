@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <link rel="stylesheet" href="css/index.css">
 </head>
 <body>
 <nav>
@@ -10,6 +11,27 @@
     <a href="create.html">Create</a>
     <a href="path.html" style="color:#4CAF50">Shortest Path</a>
 </nav>
+<div>
+    <form id="shortestPathForm">
+        <table id="pathInputTable">
+            <tr>
+                <th id="StartinPointText">Starting Point</th>
+                <th id="EndPointText">EndPoint</th>
+            </tr>
+            <tr>
+                <td><input placeholder="e.g. A" type="text" id="StartingPointInput" required></td>
+                <td><input placeholder="e.g. B" type="text" id="EndPointInput" required></td>
+            </tr>
+        </table>
+        <button type="button" id="pathSubmit">Find Shortest Path</button>
+    </form>
+</div>
+<div id="ShowShortestPathDiv">
+    <h2> Show Shortest Path:</h2>
+    <div id="pathDiv"></div>
+</div>
+<script src="js/graph.js"></script>
+<script src="js/djikstra.js"></script>
 <script src="js/path.js"></script>
 </body>
 </html>
