@@ -1,94 +1,35 @@
-class Node {
-  constructor(val, priority) {
-    this.val = val;
-    this.priority = priority;
-  }
-}
-
 class PriorityQueue {
-
   constructor() {
-    this.values = []
+    this.items = [];
   }
 
-  //
-  enqueue(val, priority) {
-    let newNode = new Node(val, priority);
-    this.values.push(newNode);
-    this.bubbleUp();
-  }
-
-  bubbleUp() {
-    let idx = this.values.length - 1;
-    const element = this.values[idx];
-
-    while (idx > 0) {
-      let parentIdx = Math.floor((idx - 1) / 2);
-      let parent = this.values[parentIdx];
-      if (element.priority >= parent.priority) break;
-      this.values[parentIdx] = element;
-      this.values[idx] = parent;
-      idx = parentIdx;
-    }
+  enqueue(item, priority) {
+    this.items.push({ item, priority });
+    this.items.sort((a, b) => a.priority - b.priority);
   }
 
   dequeue() {
-    const min = this.values[0];
-    const end = this.values.pop();
-    if (this.values.length > 0) {
-      this.values[0] = end;
-      this.sinkDown();
-    }
-    return min;
-
+    return this.items.shift().item;
   }
 
-  sinkDown() {
-    let idx = 0;
-    const length = this.values.length;
-    const element = this.values[0];
-    while (true) {
-      let leftChildIdx = 2 * idx + 1;
-      let rightChildIdx = 2 * idx + 2;
-      let leftChild, rightChild;
-      let swap = null;
-      if (leftChildIdx < length) {
-        leftChild = this.values[leftChildIdx];
-        if (leftChild.priority < element.priority) {
-          swap = leftChildIdx;
-        }
-      }
-      if (rightChildIdx < length) {
-        rightChild = this.values[rightChildIdx];
-        if (
-            (swap === null && rightChild.priority < element.priority) ||
-            (swap !== null && rightChild.priority < leftChild.priority)
-        ) {
-          swap = rightChildIdx;
-        }
-      }
-      if (swap === null) break;
-      this.values[idx] = this.values[swap];
-      this.values[swap] = element;
-      idx = swap;
-    }
-
+  isEmpty() {
+    return this.items.length === 0;
   }
 }
 
 
 class Djikstra {
   constructor() {
-    this.graph = {};
+    this.nodes = new Map();
   }
 
-  addVertex(vertex) {
-    if (!this.graph[vertex]) this.graph[vertex] = [];
+  addNode(node) {
+    this.nodes.set(node, []);
   }
 
-  addEdge(vertex1, vertex2, weight) {
-    this.graph[vertex1].push({node: vertex2, weight})
-    this.graph[vertex2].push({node: vertex1, weight})
+  addEdge(node1, node2, weight) {
+    this.nodes.get(node1).push({ node: node2, weight });
+    this.nodes.get(node2).push({ node: node1, weight });
   }
 
   importList(loadID) {
@@ -99,12 +40,12 @@ class Djikstra {
         let key = importArray[j][0];
         let value = importArray[j][1];
         if (i === 0) {
-          this.addVertex(key);
+          this.addNode(key.toString());
         } else if (value.length > 0 && i === 1) { // if it's not an empty map
           for (let k = 0; k < value.length; k++) {
             let neighbor = value[k][0];
             let cost = value[k][1];
-            this.addEdge(key, neighbor, cost); // Add the connection between the neighbor and the current key
+            this.addEdge(key.toString(), neighbor.toString(), parseInt(cost)); // Add the connection between the neighbor and the current key
           }
         }
       }
@@ -125,58 +66,54 @@ class Djikstra {
       alert("Import failed");
       window.location.href = '/create.html';
     }
-    return this.dijkstra(start, end);
+    const shortestPath = this.dijkstra(start, end);
+    if (shortestPath === null) {
+      console.log("No path found");
+      return null;
+    }else{
+        console.log("Shortest path:", shortestPath);
+    }
+    return shortestPath;
   }
 
-  dijkstra(start, finish) {
-    const nodes = new PriorityQueue();
-    const distances = {};
-    const previous = {};
-    let path = [] // to return at end
-    let smallest;
+  dijkstra(startNode, endNode) {
+    const distances = new Map();
+    const previous = new Map();
+    const priorityQueue = new PriorityQueue();
 
-    // build up initial state
-    for (let vertex in this.graph) {
-      if (vertex === start) {
-        nodes.enqueue(vertex, 0);
-        distances[vertex] = 0;
-      } else {
-        distances[vertex] = Infinity;
-        nodes.enqueue(vertex, Infinity);
-      }
-      previous[vertex] = null;
+    // Initialize distances and priority queue
+    for (const node of this.nodes.keys()) {
+      distances.set(node, node === startNode ? 0 : Infinity);
+      priorityQueue.enqueue(node, distances.get(node));
+      previous.set(node, null);
     }
 
-    // as long as any node is unvisited
-    while (nodes.values.length) {
-      smallest = nodes.dequeue().val;
-      if (smallest === finish) {
-        while (previous[smallest]) {
-          path.push(smallest);
-          smallest = previous[smallest];
-        }
-      }
-      if (smallest || distances[smallest] !== Infinity) {
-        for (let neighbor in this.graph[smallest]) {
-          // find neighboring node
-          let nextNode = this.graph[smallest][neighbor];
-          console.log(nextNode);
-          // calculate new distance to neighboring node
-          let candidate = distances[smallest] + nextNode.weight;
-          let nextNeighbor = nextNode.node;
+    while (!priorityQueue.isEmpty()) {
+      const currentNode = priorityQueue.dequeue();
 
-          if (candidate < distances[nextNeighbor]) {
-            // updating new smallest distance to neighbor
-            distances[nextNeighbor] = candidate;
-            // updating previous – How we got to neighbor
-            previous[nextNeighbor] = smallest;
-            // enqueue in priority queue with new priority
-            nodes.enqueue(nextNeighbor, candidate);
-          }
+      if (currentNode === endNode) {
+        // Reconstruct the path from endNode to startNode
+        const path = [];
+        let current = endNode;
+        while (current !== null) {
+          path.unshift(current);
+          current = previous.get(current);
         }
+        return path;
       }
 
+      const neighbors = this.nodes.get(currentNode);
+      for (const neighbor of neighbors) {
+        const newDistance = distances.get(currentNode) + neighbor.weight;
+        if (newDistance < distances.get(neighbor.node)) {
+          distances.set(neighbor.node, newDistance);
+          previous.set(neighbor.node, currentNode);
+          priorityQueue.enqueue(neighbor.node, newDistance);
+
+        }
+      }
     }
-    return path.concat(smallest).reverse();
+
+    return null; // No path found
   }
 }
