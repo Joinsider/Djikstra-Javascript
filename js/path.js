@@ -9,14 +9,26 @@ document.addEventListener("DOMContentLoaded", function () {
   pathSubmit.addEventListener("click", function () {
     startingPoint = document.getElementById("StartingPointInput").value;
     endPoint = document.getElementById("EndPointInput").value;
+
+    // Find the shortest Path by running dijkstra
     let path = dijkstra.shortestPath(loadKey, startingPoint, endPoint);
-    console.log("Djikstra RUN!")
-    let pathString = "";
-    for (let node of path) {
-      pathString = pathString + node + " --> ";
+    if (path !== []) {
+      console.log("Djikstra run successfully!");
+      alert(path.toString());
+    } else {
+      console.log("Djikstra didn't run successfully!");
+      alert(path.toString());
+      return;
     }
-    pathString = pathString.substring(0, -5);
+
+    let pathString = "";
+    for (let i = 0; i < path.length - 2; i++) {
+      pathString = pathString + path[i] + " --> ";
+    }
+    pathString = pathString + path[path.length - 2];
+    pathString = pathString + " Cost: " + path[path.length - 1];
     console.log("This is the path " + path.toString());
+    console.log("This is the pathString: " + pathString);
     let p = document.createElement("p");
     p.innerHTML = pathString;
     pathDiv.appendChild(p);
