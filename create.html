@@ -1,46 +1,62 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-    <link rel="stylesheet" href="css/index.css">
+  <meta charset="UTF-8"/>
+  <title>Title</title>
+  <link rel="stylesheet" href="css/index.css"/>
 </head>
 <body>
 <nav>
-    <a href="index.html">Main</a>
-    <a href="create.html" style="color:#4CAF50">Create</a>
-    <a href="path.html">Shortest Path</a>
+  <a href="index.html">Main</a>
+  <a href="create.html" style="color: #4caf50">Create</a>
+  <a href="path.html">Shortest Path</a>
 </nav>
-<br><br>
+<br/><br/>
 <div id="createGraph">
-    <h2>Create a Graph:</h2>
-    <div id="rowDiv">
-        <button id="addButton" type="button">+</button>
-        <button id="removeButton" type="button">-</button>
-    </div>
-    <form id="costForm">
-        <table id="addTable">
-            <tr>
-                    <th>Starting Point</th>
-                    <th>Travel Cost</th>
-                    <th>Destination Point</th>
-                </tr>
-                <tr>
-                    <td><input type="text" name="startPoint" id="startPoint" required placeholder="e.g. A"></td>
-                    <td><input type="number" name="cost" id="cost" value="1"></td>
-                    <td><input type="text" name="endPoint" id="endPoint" required placeholder="e.g. B"></td>
-                </tr>
-            </table>
-            <button type="button" id="submitButton">Submit</button>
-        <button type="button" id="resetButton">Reset</button>
-        </form>
-    </div>
-    <div id="showGraph">
-        <h2>Graph:</h2>
-        <div id="graphDiv"></div>
-        <button id="showGraphButton" type="button">Show AdjacencyList</button>
-    </div>
+  <h2>Create a Graph:</h2>
+  <div id="rowDiv">
+    <button id="addButton" type="button">+</button>
+    <button id="removeButton" type="button">-</button>
+  </div>
+  <form id="costForm">
+    <table id="addTable">
+      <tr>
+        <th>Starting Point</th>
+        <th>Travel Cost</th>
+        <th>Destination Point</th>
+      </tr>
+      <tr>
+        <td>
+          <input
+                  type="text"
+                  name="startPoint"
+                  id="startPoint"
+                  required
+                  placeholder="e.g. A"
+          />
+        </td>
+        <td><input type="number" name="cost" id="cost" value="1"/></td>
+        <td>
+          <input
+                  type="text"
+                  name="endPoint"
+                  id="endPoint"
+                  required
+                  placeholder="e.g. B"
+          />
+        </td>
+      </tr>
+    </table>
+    <button type="button" id="submitButton">Submit</button>
+    <button type="button" id="resetButton">Reset</button>
+  </form>
+</div>
+<div id="showGraph">
+  <h2>Graph:</h2>
+  <div id="graphDiv"></div>
+  <button id="showGraphButton" type="button">Show AdjacencyList</button>
+</div>
 <script src="js/graph.js"></script>
-    <script src="js/create.js" defer></script>
+<script src="js/create.js"></script>
 </body>
 </html>
