@@ -3,19 +3,22 @@ document.addEventListener("DOMContentLoaded", function () {
   let startingPoint = document.getElementById("StartingPointInput").value;
   let endPoint = document.getElementById("EndPointInput").value;
   const pathDiv = document.getElementById("pathDiv");
-  let graphElement = new Graph();
-  let weightedGraph = new Djikstra();
-  let djikstra = new Djikstra();
+  let dijkstra = new Dijkstra();
   const loadKey = "GraphSave";
 
   pathSubmit.addEventListener("click", function () {
     startingPoint = document.getElementById("StartingPointInput").value;
     endPoint = document.getElementById("EndPointInput").value;
-    let path = weightedGraph.shortestDist(loadKey, startingPoint, endPoint);
+    let path = dijkstra.shortestPath(loadKey, startingPoint, endPoint);
     console.log("Djikstra RUN!")
-    console.log(path);
+    let pathString = "";
+    for (let node of path) {
+      pathString = pathString + node + " --> ";
+    }
+    pathString = pathString.substring(0, -5);
+    console.log("This is the path " + path.toString());
     let p = document.createElement("p");
-    p.innerHTML = path.toString();
+    p.innerHTML = pathString;
     pathDiv.appendChild(p);
   });
 
