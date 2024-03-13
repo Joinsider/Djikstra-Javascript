@@ -1,22 +1,19 @@
 class Dijkstra {
     constructor() {
         this.graphElement = new Graph();
-        this.graph = this.graphElement.nodes;
+        this.graph = new Map();
         this.cost = new Map();
         this.pred = new Map();
         this.visited = [];
     }
 
-    findPriority(node) {
-        let priorityKey = node;
+    findPriority() {
+        let priorityKey = null;
         let shortestCost = Infinity;
-        for (let node of this.graph) { // Find the next node with the smallest cost
-            if (!this.visited.includes(node)) { // Only if not visited before
-                let nodeCost = this.cost.get(node);
-                if (nodeCost < shortestCost) {
-                    shortestCost = nodeCost;
-                    priorityKey = node
-                }
+        for (const node of this.cost.entries()) {
+            if (!this.visited.includes(node[0]) && node[1] < shortestCost) {
+                shortestCost = node[1];
+                priorityKey = node[0];
             }
         }
         return priorityKey;
@@ -26,45 +23,55 @@ class Dijkstra {
         // Initialize for Dijkstra
         for (const node of this.graph.entries()) {
             this.cost.set(node[0], Infinity);
+            this.pred.set(node[0], null);
+            console.log("Node: " + node[0] + " Cost: " + this.cost.get(node[0]) + " Pred: " + this.pred.get(node[0]));
         }
         this.cost.set(start, 0);
+        console.log("Start: " + start + " Cost: " + this.cost.get(start) + " Pred: " + this.pred.get(start));
 
-        let priorityKey = "";
-        for (let i = 0; i < this.graph.size; i++) {
-            priorityKey = this.findPriority(priorityKey);
+        let priorityKey = start;
 
-            let neighbors = this.graph.get(priorityKey);
-            if (this.graph.get(priorityKey).size !== 0) { // If the node has a neighbor
-                for (let neighbor of neighbors.entries()) { // For each neighbor check if the cost is smaller than the current cost
-                    let key = neighbor[0];
-                    let value = neighbor[1];
+        while (priorityKey !== null && this.visited.length < this.graph.size) {
+            let neighbors = this.graph.get(priorityKey); // Returns the Neighbor Map
+            console.log("PriorityKey: " + priorityKey + " Neighbors: " + JSON.stringify(Array.from(neighbors)));
+            if (neighbors.size !== 0 /*JSON.stringify(Array.from(neighbors))!== "[]"*/) {
+                for (let n of neighbors.entries()) {
+                    let key = n[0];
+                    let value = n[1];
 
-                    let calcCost = this.cost.get(priorityKey) + value // cost of the current node + cost to the neighbor
-                    if (calcCost < this.cost.get(key)) {
-                        this.cost.set(key, calcCost);
-                        this.pred.set(key, priorityKey)
-                    } // When the new cost is smaller than the current cost set the smaller cost
+                    let newCost = this.cost.get(priorityKey) + value;
+                    console.log("Neighbor: " + key + " Cost: " + value + " NewCost: " + newCost + " CurrentCost: " + this.cost.get(key) + " Pred: " + this.pred.get(key));
+                    if (this.cost.get(key) > newCost) {
+                        this.cost.set(key, newCost);
+                        this.pred.set(key, priorityKey);
+                        console.log("--> Neighbor: " + key + " Cost: " + value + " NewCost: " + newCost + " CurrentCost: " + this.cost.get(key) + " Pred: " + this.pred.get(key));
+                    }
                 }
             }
             this.visited.push(priorityKey);
+            priorityKey = this.findPriority();
+            console.log("PriorityKey: " + priorityKey + " Visited: " + this.visited.toString());
         }
     }
 
     shortestPath(loadKey, start, end) {
         let importSuccess = this.graphElement.importList(loadKey);
-        if (!importSuccess) {
+        this.graph = this.graphElement.nodes;
+        if (/*this.graphElement.nodes !== this.graph ||*/ !importSuccess) {
             alert("Import failed please create a Graph first.")
             window.location.href = "/create.html";
         } else {
             this.dijkstra(start);
-            let path = [
-                end,
-                this.cost.get(end)
-            ];
+            let path = [end.toString()];
             let active = end;
-            while (active !== start) {
-                path.unshift(this.pred.get(active));
-                active = this.pred.get(active);
+            for (let i = 0; i < this.pred.size; i++) {
+                let predNode = this.pred.get(active);
+                if (predNode === null) {
+                    break;
+                } else {
+                    path.unshift(predNode);
+                    active = predNode;
+                }
             }
             return path;
         }

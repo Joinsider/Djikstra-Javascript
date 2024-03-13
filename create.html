@@ -27,34 +27,27 @@
       </tr>
       <tr>
         <td>
-          <input
-                  type="text"
-                  name="startPoint"
-                  id="startPoint"
-                  required
-                  placeholder="e.g. A"
-          />
+          <input type="text" name="startPoint" id="startPoint" required placeholder="e.g. A"/>
         </td>
         <td><input type="number" name="cost" id="cost" value="1"/></td>
         <td>
-          <input
-                  type="text"
-                  name="endPoint"
-                  id="endPoint"
-                  required
-                  placeholder="e.g. B"
-          />
+          <input type="text" name="endPoint" id="endPoint" required placeholder="e.g. B"/>
         </td>
       </tr>
     </table>
     <button type="button" id="submitButton">Submit</button>
     <button type="button" id="resetButton">Reset</button>
+    <button type="button" id="exampleButton">Example Graph</button>
   </form>
 </div>
 <div id="showGraph">
   <h2>Graph:</h2>
   <div id="graphDiv"></div>
   <button id="showGraphButton" type="button">Show AdjacencyList</button>
+</div>
+<div id="exampleGraph">
+  <h2>Example Graph:</h2>
+  <img src="example_graph.jpg">
 </div>
 <script src="js/graph.js"></script>
 <script src="js/create.js"></script>

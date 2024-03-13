@@ -12,25 +12,25 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Find the shortest Path by running dijkstra
     let path = dijkstra.shortestPath(loadKey, startingPoint, endPoint);
-    if (path !== []) {
-      console.log("Djikstra run successfully!");
-      alert(path.toString());
-    } else {
+    if (path.length < 1) {
       console.log("Djikstra didn't run successfully!");
       alert(path.toString());
       return;
     }
+    console.log("Djikstra run successfully!");
+    alert(path.toString());
 
     let pathString = "";
-    for (let i = 0; i < path.length - 2; i++) {
+    for (let i = 0; i < path.length - 1; i++) {
       pathString = pathString + path[i] + " --> ";
     }
-    pathString = pathString + path[path.length - 2];
-    pathString = pathString + " Cost: " + path[path.length - 1];
+    pathString = pathString + path[path.length - 1];
     console.log("This is the path " + path.toString());
     console.log("This is the pathString: " + pathString);
     let p = document.createElement("p");
     p.innerHTML = pathString;
+
+    pathDiv.textContent = '';
     pathDiv.appendChild(p);
   });
 
