@@ -5,6 +5,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const submit = document.getElementById("submitButton");
   const resetButton = document.getElementById("resetButton");
   const showGraphButton = document.getElementById("showGraphButton");
+  const exampleButton = document.getElementById("exampleButton");
   const graphDiv = document.getElementById("graphDiv");
   const graphElement = new Graph(); // Create a new graph object to store the nodes
   const loadKey = "GraphSave";
@@ -122,4 +123,17 @@ document.addEventListener("DOMContentLoaded", function () {
       graphDiv.appendChild(graphRepresentationOutput);
     }
   });
+
+  exampleButton.addEventListener('click', function(){
+    localStorage.clear();
+    graphElement.addNodes("A", "B", 25);
+    graphElement.addNodes("B", "C", 10);
+    graphElement.addNodes("D", "C", 4);
+    graphElement.addNodes("A", "D", 14);
+    // Example Graph from Image
+    let exportSuccessful = graphElement.exportList(loadKey);
+    console.log("Graph saved to localStorage");
+    alert("Graph creation successful!");
+  });
+
 });
