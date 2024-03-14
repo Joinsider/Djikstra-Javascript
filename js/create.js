@@ -128,8 +128,8 @@ document.addEventListener("DOMContentLoaded", function () {
     localStorage.clear();
     graphElement.addNodes("A", "B", 25);
     graphElement.addNodes("B", "C", 10);
-    graphElement.addNodes("D", "C", 4);
     graphElement.addNodes("A", "D", 14);
+    graphElement.addNodes("D", "C", 4);
     // Example Graph from Image
     let exportSuccessful = graphElement.exportList(loadKey);
     console.log("Graph saved to localStorage");
